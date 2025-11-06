@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>🎉 ¡Feliz Cumpleaños, Yinneth! 🎂</title>
+  <style>
+    :root{
+      --pink:#ff4f81;--orange:#ff8a00;--ink:#232323;
+      --glass: rgba(255,255,255,.75);
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0; font-family: 'Poppins', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background: linear-gradient(135deg, #ffdee9, #b5fffc);
+      color:var(--ink); text-align:center; overflow-x:hidden;
+    }
+    .container{padding:22px; max-width:720px; margin:auto; position:relative}
+    h1{font-size:clamp(28px,7vw,40px); color:var(--pink); margin:8px 0 6px}
+    p{font-size:1.05rem; margin:0 0 16px}
+
+    /* Top actions */
+    .actions{position:sticky; top:8px; display:flex; gap:10px; justify-content:center; z-index:10}
+    .btn{border:0; padding:12px 16px; border-radius:999px; font-weight:700; cursor:pointer;
+      background:linear-gradient(90deg,var(--pink),var(--orange)); color:#fff; box-shadow:0 8px 20px rgba(0,0,0,.18)}
+    .btn.ghost{background:var(--glass); color:var(--ink)}
+
+    /* Slider */
+    .slider{ position:relative; width:100%; aspect-ratio: 3/2; border-radius:16px; overflow:hidden;
+      box-shadow:0 10px 28px rgba(0,0,0,.2); margin:18px 0 }
+    .slide{ position:absolute; inset:0; opacity:0; transition: opacity .8s ease; }
+    .slide.active{ opacity:1 }
+    .slide img{ width:100%; height:100%; object-fit:cover }
+    .dots{ position:absolute; left:0; right:0; bottom:10px; display:flex; gap:8px; justify-content:center }
+    .dot{ width:8px; height:8px; border-radius:50%; background:#fff; opacity:.5 }
+    .dot.active{ opacity:1; transform:scale(1.25)}
+
+    /* Card */
+    .card{background:var(--glass); backdrop-filter: blur(8px); border-radius:18px; padding:14px 16px; box-shadow:0 10px 28px rgba(0,0,0,.1)}
+
+    /* Floating hearts */
+    .hearts{ position:fixed; inset:0; pointer-events:none; overflow:hidden; }
+    .heart{ position:absolute; font-size:20px; animation: rise 2.6s ease-in forwards; filter: drop-shadow(0 6px 10px rgba(0,0,0,.2)); }
+    @keyframes rise{ from{ transform: translateY(0) scale(.9); opacity:.9 } to{ transform: translateY(-110vh) scale(1.6); opacity:0 } }
+
+    /* Confetti canvas */
+    #confetti{ position:fixed; inset:0; pointer-events:none }
+
+    footer{ margin:20px 0 8px; color:#555 }
+
+    @media (prefers-reduced-motion: reduce){
+      .slide{ transition:none }
+    }
+  </style>
+</head>
+<body>
+  <canvas id="confetti"></canvas>
+  <div class="hearts" id="hearts"></div>
+
+  <div class="container">
+    <div class="actions">
+      <button class="btn" id="btnSong">▶️ Canción</button>
+      <button class="btn ghost" id="btnConfetti">🎉 Confeti</button>
+      <button class="btn ghost" id="btnHearts">❤️ Corazones</button>
+    </div>
+
+    <h1>🎂 ¡Feliz Cumpleaños, Yinneth! 🎉</h1>
+    <p class="card">En este día especial y a pesar de la distancia, mi amor por ti es infinito y quiero recordarte lo especial que eres para mí. Hoy es un día muy importante para todos nosotros. ¡Te amo hermanita! 💖</p>
+
+    <!-- Slider con transición suave y gestos -->
+    <section class="slider" id="slider" aria-label="Galería de recuerdos">
+      <figure class="slide active"><img src="file_00000000101c71f5acebf1425ca3546f" alt="Foto de la infancia juntos" /></figure>
+      <figure class="slide"><img src="file_000000007a30720ebe95ac68c15bcf34" alt="Foto artística de Yinneth" /></figure>
+      <figure class="slide"><img src="file_00000000e7e071f5949a800012bc006e" alt="Foto con paisaje de fondo" /></figure>
+      <div class="dots" id="dots" aria-hidden="true"></div>
+    </section>
+
+    <div class="card" style="display:flex; gap:10px; justify-content:center; flex-wrap:wrap">
+      <button class="btn ghost" id="btnShare">📲 Compartir por WhatsApp</button>
+      <button class="btn ghost" id="btnAdd">📌 Agregar a inicio</button>
+    </div>
+
+    <footer>Hecho con 💕 por tu hermano Nicolás</footer>
+  </div>
+
+  <script>
+    // ===== Canción (abre YouTube) =====
+    document.getElementById('btnSong').addEventListener('click', ()=>{
+      window.open('https://www.youtube.com/watch?v=wPQj5VwG9XY','_blank');
+    });
+
+    // ===== Slider con autoplay, dots y gestos táctiles =====
+    const slides = Array.from(document.querySelectorAll('.slide'));
+    const dotsWrap = document.getElementById('dots');
+    let i=0, timer=null, touchStartX=null;
+
+    function drawDots(){
+      dotsWrap.innerHTML = slides.map((_,k)=>`<div class="dot${k===i?' active':''}"></div>`).join('');
+    }
+    function show(n){
+      slides[i].classList.remove('active');
+      i=(n+slides.length)%slides.length;
+      slides[i].classList.add('active');
+      drawDots();
+    }
+    function next(){ show(i+1); }
+    function autoplay(){ clearInterval(timer); timer=setInterval(next, 3200); }
+
+    drawDots(); autoplay();
+
+    // Gestos
+    const slider = document.getElementById('slider');
+    slider.addEventListener('touchstart', e=>{ touchStartX = e.touches[0].clientX; clearInterval(timer); }, {passive:true});
+    slider.addEventListener('touchend', e=>{
+      if(touchStartX==null) return; const dx = e.changedTouches[0].clientX - touchStartX;
+      if(Math.abs(dx)>40){ dx<0 ? next() : show(i-1); }
+      touchStartX=null; autoplay();
+    }, {passive:true});
+
+    // ===== Compartir por WhatsApp =====
+    document.getElementById('btnShare').addEventListener('click', ()=>{
+      const text = encodeURIComponent('🎉 Mira esta sorpresa de cumpleaños para Yinneth: '+location.href);
+      open('https://wa.me/?text='+text,'_blank');
+    });
+
+    // ===== Recordatorio agregar a inicio =====
+    document.getElementById('btnAdd').addEventListener('click', ()=>{
+      alert('En tu celular: abre el menú del navegador y toca "Agregar a la pantalla de inicio".');
+    });
+
+    // ===== Corazones flotando =====
+    const heartsBox = document.getElementById('hearts');
+    function heartsBurst(count=18){
+      for(let k=0;k<count;k++){
+        const s = document.createElement('span');
+        s.className='heart'; s.textContent='❤';
+        s.style.left = (Math.random()*100)+'vw';
+        s.style.bottom = '-10vh';
+        s.style.fontSize = (Math.random()*18+16)+'px';
+        s.style.opacity = .8;
+        s.style.transition = 'transform .3s';
+        heartsBox.appendChild(s);
+        setTimeout(()=> s.remove(), 2600);
+      }
+    }
+    document.getElementById('btnHearts').addEventListener('click', ()=> heartsBurst(24));
+
+    // ===== Confeti canvas ligero =====
+    const cvs = document.getElementById('confetti');
+    const ctx = cvs.getContext('2d');
+    const DPR = Math.max(1, Math.min(2, devicePixelRatio||1));
+    let W,H,parts=[]; function resize(){ W=cvs.width=innerWidth*DPR; H=cvs.height=innerHeight*DPR; }
+    addEventListener('resize', resize); resize();
+
+    function particle(){
+      const a = Math.random()*Math.PI*2;
+      const speed = (Math.random()*2+2)*DPR;
+      return { x: W/2, y: H/3, vx: Math.cos(a)*speed, vy: Math.sin(a)*speed, s:(Math.random()*6+4)*DPR, rot:Math.random()*Math.PI, vr:(Math.random()-.5)*.2, c:`hsl(${Math.random()*360} 90% 60%)` };
+    }
+    function confetti(n=160){ for(let j=0;j<n;j++) parts.push(particle()); }
+    function step(){
+      ctx.clearRect(0,0,W,H);
+      parts.forEach(p=>{ p.x+=p.vx; p.y+=p.vy+0.6; p.vx*=0.995; p.vy+=0.02; p.rot+=p.vr;
+        ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.rot); ctx.fillStyle=p.c; ctx.fillRect(-p.s/2,-p.s/2,p.s,p.s); ctx.restore(); });
+      parts = parts.filter(p=> p.y < H+40*DPR);
+      requestAnimationFrame(step);
+    }
+    step();
+    document.getElementById('btnConfetti').addEventListener('click', ()=>{ confetti(180); });
+    // Explosión inicial sutil
+    setTimeout(()=>confetti(100), 700);
+  </script>
+</body>
+</html>
