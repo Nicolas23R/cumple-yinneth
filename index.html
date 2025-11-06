@@ -19,13 +19,11 @@
     h1{font-size:clamp(28px,7vw,40px); color:var(--pink); margin:8px 0 6px}
     p{font-size:1.05rem; margin:0 0 16px}
 
-    /* Top actions */
     .actions{position:sticky; top:8px; display:flex; gap:10px; justify-content:center; z-index:10}
     .btn{border:0; padding:12px 16px; border-radius:999px; font-weight:700; cursor:pointer;
       background:linear-gradient(90deg,var(--pink),var(--orange)); color:#fff; box-shadow:0 8px 20px rgba(0,0,0,.18)}
     .btn.ghost{background:var(--glass); color:var(--ink)}
 
-    /* Slider */
     .slider{ position:relative; width:100%; aspect-ratio: 3/2; border-radius:16px; overflow:hidden;
       box-shadow:0 10px 28px rgba(0,0,0,.2); margin:18px 0 }
     .slide{ position:absolute; inset:0; opacity:0; transition: opacity .8s ease; }
@@ -35,22 +33,15 @@
     .dot{ width:8px; height:8px; border-radius:50%; background:#fff; opacity:.5 }
     .dot.active{ opacity:1; transform:scale(1.25)}
 
-    /* Card */
     .card{background:var(--glass); backdrop-filter: blur(8px); border-radius:18px; padding:14px 16px; box-shadow:0 10px 28px rgba(0,0,0,.1)}
 
-    /* Floating hearts */
     .hearts{ position:fixed; inset:0; pointer-events:none; overflow:hidden; }
     .heart{ position:absolute; font-size:20px; animation: rise 2.6s ease-in forwards; filter: drop-shadow(0 6px 10px rgba(0,0,0,.2)); }
     @keyframes rise{ from{ transform: translateY(0) scale(.9); opacity:.9 } to{ transform: translateY(-110vh) scale(1.6); opacity:0 } }
 
-    /* Confetti canvas */
     #confetti{ position:fixed; inset:0; pointer-events:none }
 
     footer{ margin:20px 0 8px; color:#555 }
-
-    @media (prefers-reduced-motion: reduce){
-      .slide{ transition:none }
-    }
   </style>
 </head>
 <body>
@@ -67,10 +58,10 @@
     <h1>🎂 ¡Feliz Cumpleaños, Yinneth! 🎉</h1>
     <p class="card">En este día especial y a pesar de la distancia, mi amor por ti es infinito y quiero recordarte lo especial que eres para mí. Hoy es un día muy importante para todos nosotros. ¡Te amo hermanita! 💖</p>
 
-    <!-- Slider con transición suave y gestos -->
     <section class="slider" id="slider" aria-label="Galería de recuerdos">
-      <figure class="slide active"><img src="./fotos/1.jpg" alt="Foto de la infancia juntos" onerror="this.style.opacity=.2;this.alt='Sube ./fotos/1.jpg'" /></figure>
-      <figure class="slide"><img src="./fotos/3.jpg" alt="Foto con paisaje de fondo" onerror="this.style.opacity=.2;this.alt='Sube ./fotos/3.jpg'" /></figure>
+      <figure class="slide active"><img src="1.jpg" alt="Foto de la infancia juntos" /></figure>
+      <figure class="slide"><img src="2.jpg" alt="Foto artística de Yinneth" /></figure>
+      <figure class="slide"><img src="3.jpg" alt="Foto con paisaje de fondo" /></figure>
       <div class="dots" id="dots" aria-hidden="true"></div>
     </section>
 
@@ -83,12 +74,10 @@
   </div>
 
   <script>
-    // ===== Canción (abre YouTube) =====
     document.getElementById('btnSong').addEventListener('click', ()=>{
       window.open('https://www.youtube.com/watch?v=wPQj5VwG9XY','_blank');
     });
 
-    // ===== Slider con autoplay, dots y gestos táctiles =====
     const slides = Array.from(document.querySelectorAll('.slide'));
     const dotsWrap = document.getElementById('dots');
     let i=0, timer=null, touchStartX=null;
@@ -107,7 +96,6 @@
 
     drawDots(); autoplay();
 
-    // Gestos
     const slider = document.getElementById('slider');
     slider.addEventListener('touchstart', e=>{ touchStartX = e.touches[0].clientX; clearInterval(timer); }, {passive:true});
     slider.addEventListener('touchend', e=>{
@@ -116,18 +104,15 @@
       touchStartX=null; autoplay();
     }, {passive:true});
 
-    // ===== Compartir por WhatsApp =====
     document.getElementById('btnShare').addEventListener('click', ()=>{
       const text = encodeURIComponent('🎉 Mira esta sorpresa de cumpleaños para Yinneth: '+location.href);
       open('https://wa.me/?text='+text,'_blank');
     });
 
-    // ===== Recordatorio agregar a inicio =====
     document.getElementById('btnAdd').addEventListener('click', ()=>{
       alert('En tu celular: abre el menú del navegador y toca "Agregar a la pantalla de inicio".');
     });
 
-    // ===== Corazones flotando =====
     const heartsBox = document.getElementById('hearts');
     function heartsBurst(count=18){
       for(let k=0;k<count;k++){
@@ -144,7 +129,6 @@
     }
     document.getElementById('btnHearts').addEventListener('click', ()=> heartsBurst(24));
 
-    // ===== Confeti canvas ligero =====
     const cvs = document.getElementById('confetti');
     const ctx = cvs.getContext('2d');
     const DPR = Math.max(1, Math.min(2, devicePixelRatio||1));
@@ -166,7 +150,6 @@
     }
     step();
     document.getElementById('btnConfetti').addEventListener('click', ()=>{ confetti(180); });
-    // Explosión inicial sutil
     setTimeout(()=>confetti(100), 700);
   </script>
 </body>
